@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kid="src" path="src"/>
+    <classpathentry kid="lib" path="E:\\软件工程\\实验1\\test\\test\\lib\\gs-core-2.0.jar"/>
+    <classpathentry kid="output" path="bin"/>
+</classpath>
