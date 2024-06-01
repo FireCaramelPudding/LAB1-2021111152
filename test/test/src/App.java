@@ -217,7 +217,7 @@ public class App {
        
         if(wordOrderMap.containsKey(word1)==false && wordOrderMap.containsKey(word2)==false){
             
-            return "No word"+"\"" + word1 + "\"" + " and " + "\"" + word2 + "\"";
+            return "No word"+"\"" + word1 + "\"" + " and " + "\"" + word2 + "\"";//修改添加打印内容
         }
         else if(wordOrderMap.containsKey(word1)==false && wordOrderMap.containsKey(word2)==true)
         {
