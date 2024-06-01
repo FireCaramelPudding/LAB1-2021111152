@@ -156,9 +156,9 @@ public class App {
         }
         }
         else{//查询词不存在
-             if(!wordOrderMap.containsKey(word1)) returnWords += ("No \"" + word1);
-             if(!wordOrderMap.containsKey(word2)) returnWords += ("No \" " + word2);//v1.1添加No \
-             returnWords += "\" in the graph!\n";
+             if(!wordOrderMap.containsKey(word1)) returnWords += ("No \"" + word1 + "\"" + " ");
+             if(!wordOrderMap.containsKey(word2)) returnWords += ("No \"" + word2+ "\"");//v1.1添加No \
+             returnWords += " in the graph!\n";
         }
         return returnWords;
     }
@@ -215,13 +215,17 @@ public class App {
             ▪ 可选功能：如果用户只输入一个单词，则程序计算出该单词到图中其他任一单词的最短路径，并逐项展示出来
         */
        
-        if(wordOrderMap.containsKey(word1)==false){
+        if(wordOrderMap.containsKey(word1)==false && wordOrderMap.containsKey(word2)==false){
             
-            return "No word"+word1;
+            return "No word"+"\"" + word1 + "\"" + " and " + "\"" + word2 + "\"";
         }
-        else if(wordOrderMap.containsKey(word1)==false)
+        else if(wordOrderMap.containsKey(word1)==false && wordOrderMap.containsKey(word2)==true)
         {
-            return "No word"+word2;
+            return "No word"+"\"" + word1 + "\"";
+        }
+        else if(wordOrderMap.containsKey(word1)==true && wordOrderMap.containsKey(word2)==false)
+        {
+            return "No word"+"\"" + word2 + "\"";
         }
         else{
         int w1 = wordOrderMap.get(word1);
@@ -333,7 +337,7 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         while (traversalRunning) 
         {
-            System.out.println("现在进入循环");
+            // System.out.println("现在进入循环");
             // 随机选择下一个顶点
             Random random = new Random();
             int nextVertex = -1;
@@ -342,7 +346,7 @@ public class App {
                 for(int i=0;i<numOfVertices;i++ ){
                     if(adjacencyMatrix[startVertex][i] != 0)
                     {
-                        System.out.println("adjacencyMatrix[startVertex][i]是" + adjacencyMatrix[startVertex][i]);
+                        // System.out.println("adjacencyMatrix[startVertex][i]是" + adjacencyMatrix[startVertex][i]);
                         exist.add(i);
                     }
                 }
@@ -420,7 +424,7 @@ public class App {
             System.out.println("show: show the graph");
             System.out.println("bridge: search bridge words");
             System.out.println("generate: generate new text by bridge words");
-            System.out.println("shortpath: search the shortest path between tow words");
+            System.out.println("shortpath: search the shortest path between two words");
             System.out.println("walk: walk in the graph randomly");
             System.out.println("exit: exit the program");
             System.out.println("*********************************************");
@@ -436,7 +440,12 @@ public class App {
             }
             else if(command.equalsIgnoreCase("bridge")){
                 //查询桥接词
-                System.out.println(graph.queryBridgeWords("to", "strange"));//查询桥接词
+                String word1,word2;
+                System.out.println("please input word1");
+                word1 = scanner.nextLine();
+                System.out.println("please input word2");
+                word2 = scanner.nextLine();
+                System.out.println(graph.queryBridgeWords(word1, word2));//查询桥接词
             }
             else if(command.equalsIgnoreCase("generate"))
             {
@@ -461,9 +470,9 @@ public class App {
                 System.out.println("please input two words with black:");
                 String new_text = scanner.nextLine();
                 String[] words = new_text.split("\\s+");//按空格划分
-                if(words.length>=3)
+                if(words.length>=3||words.length<=1)
                 {
-                    System.out.println("Input more then 2 words!");
+                    System.out.println("Input wrong!Please input two words!");
                     continue;
                 }
                 else
