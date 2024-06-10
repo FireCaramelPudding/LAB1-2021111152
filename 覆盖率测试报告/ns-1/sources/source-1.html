@@ -1,0 +1,595 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > App</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">demo</a>
+</div>
+
+<h1>Coverage Summary for Class: App (demo)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">App</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (6/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    26.5%
+  </span>
+  <span class="absValue">
+    (65/245)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package demo;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.io.BufferedReader;
+<i class="no-highlight">4</i>&nbsp;import java.io.FileReader;
+<i class="no-highlight">5</i>&nbsp;import java.io.FileWriter;
+<i class="no-highlight">6</i>&nbsp;import java.io.IOException;
+<i class="no-highlight">7</i>&nbsp;import java.util.*;
+<i class="no-highlight">8</i>&nbsp;//import java.util.*;
+<i class="no-highlight">9</i>&nbsp;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;public class App {
+<i class="no-highlight">12</i>&nbsp;
+<i class="no-highlight">13</i>&nbsp;  final int[][] adjacencyMatrix; //邻接矩阵
+<i class="no-highlight">14</i>&nbsp;  final int numOfVertices; //邻接矩阵阶数
+<i class="no-highlight">15</i>&nbsp;  private HashMap&lt;String, Integer&gt; wordOrderMap; //key为单词，value为对应节点编号的hashmap
+<i class="no-highlight">16</i>&nbsp;
+<i class="no-highlight">17</i>&nbsp;  /*目的：构造图的三个数据
+<i class="no-highlight">18</i>&nbsp;    输入：读入的文本字符串
+<i class="no-highlight">19</i>&nbsp;  */
+<b class="fc"><i class="no-highlight">20</i>&nbsp;  public App(String txt) {</b>
+<b class="fc"><i class="no-highlight">21</i>&nbsp;    this.numOfVertices = processText(txt); //初始化</b>
+<b class="fc"><i class="no-highlight">22</i>&nbsp;    this.adjacencyMatrix = new int[numOfVertices][numOfVertices]; //初始化</b>
+<i class="no-highlight">23</i>&nbsp;    //
+<b class="fc"><i class="no-highlight">24</i>&nbsp;    for (int i = 0; i &lt; numOfVertices; i++) {</b>
+<b class="fc"><i class="no-highlight">25</i>&nbsp;      for (int j = 0; j &lt; numOfVertices; j++) {</b>
+<b class="fc"><i class="no-highlight">26</i>&nbsp;        adjacencyMatrix[i][j] = 0;</b>
+<i class="no-highlight">27</i>&nbsp;      }
+<i class="no-highlight">28</i>&nbsp;    } //邻接矩阵初始化为全0，代表无边
+<b class="fc"><i class="no-highlight">29</i>&nbsp;    String[] lines = txt.split(&quot;\\n&quot;); //按换行分隔</b>
+<b class="fc"><i class="no-highlight">30</i>&nbsp;    StringBuilder processedWord = new StringBuilder(); //字符串，用于储存处理完成之后的文本</b>
+<b class="fc"><i class="no-highlight">31</i>&nbsp;    for (String line : lines) {</b>
+<i class="no-highlight">32</i>&nbsp;      //
+<b class="fc"><i class="no-highlight">33</i>&nbsp;      line = line.replaceAll(&quot;[^a-zA-Z\\s]&quot;, &quot; &quot;).toLowerCase(); //每行遍历替换</b>
+<i class="no-highlight">34</i>&nbsp;
+<i class="no-highlight">35</i>&nbsp;      //
+<b class="fc"><i class="no-highlight">36</i>&nbsp;      String[] words = line.trim().split(&quot;\\s+&quot;);</b>
+<b class="fc"><i class="no-highlight">37</i>&nbsp;      for (String word : words) {</b>
+<b class="fc"><i class="no-highlight">38</i>&nbsp;        if (!word.isEmpty()) {</b>
+<b class="fc"><i class="no-highlight">39</i>&nbsp;          processedWord.append(&quot; &quot;).append(word); //将处理完的文本存入processedWord中</b>
+<i class="no-highlight">40</i>&nbsp;        }
+<i class="no-highlight">41</i>&nbsp;      }
+<i class="no-highlight">42</i>&nbsp;    }
+<b class="fc"><i class="no-highlight">43</i>&nbsp;    String[] words = processedWord.toString().trim().split(&quot;\\s+&quot;); //处理后的文本按空格分隔</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;    for (int i = 0; i &lt; words.length - 1; i++) {</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;      addEdge(wordOrderMap.get(words[i]), wordOrderMap.get(words[i + 1])); //相邻单词之间加入边</b>
+<i class="no-highlight">46</i>&nbsp;    }
+<i class="no-highlight">47</i>&nbsp;
+<i class="no-highlight">48</i>&nbsp;  }
+<i class="no-highlight">49</i>&nbsp;
+<i class="no-highlight">50</i>&nbsp;  /*目的：处理文本初始化单词与节点序号对应的hashmap
+<i class="no-highlight">51</i>&nbsp;   * 输入：文本字符串
+<i class="no-highlight">52</i>&nbsp;   * 返回值：节点最大编号（单词种类数-1）
+<i class="no-highlight">53</i>&nbsp;   */
+<i class="no-highlight">54</i>&nbsp;  public Integer processText(String text) {
+<b class="fc"><i class="no-highlight">55</i>&nbsp;    wordOrderMap = new HashMap&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">56</i>&nbsp;    int order = 0; // 节点编号从0开始</b>
+<i class="no-highlight">57</i>&nbsp;
+<b class="fc"><i class="no-highlight">58</i>&nbsp;    String[] lines = text.split(&quot;\\n&quot;); //按行分隔</b>
+<i class="no-highlight">59</i>&nbsp;
+<b class="fc"><i class="no-highlight">60</i>&nbsp;    for (String line : lines) {</b>
+<i class="no-highlight">61</i>&nbsp;      // 每行处理替换
+<b class="fc"><i class="no-highlight">62</i>&nbsp;      line = line.replaceAll(&quot;[^a-zA-Z\\s]&quot;, &quot; &quot;).toLowerCase();</b>
+<i class="no-highlight">63</i>&nbsp;
+<i class="no-highlight">64</i>&nbsp;      // 按空格分隔
+<b class="fc"><i class="no-highlight">65</i>&nbsp;      String[] words = line.trim().split(&quot;\\s+&quot;);</b>
+<i class="no-highlight">66</i>&nbsp;
+<b class="fc"><i class="no-highlight">67</i>&nbsp;      for (String word : words) {</b>
+<b class="fc"><i class="no-highlight">68</i>&nbsp;        if (!word.isEmpty() &amp;&amp; !wordOrderMap.containsKey(word)) {</b>
+<i class="no-highlight">69</i>&nbsp;          // 插入hashmap
+<b class="fc"><i class="no-highlight">70</i>&nbsp;          wordOrderMap.put(word, order++);</b>
+<i class="no-highlight">71</i>&nbsp;        }
+<i class="no-highlight">72</i>&nbsp;      }
+<i class="no-highlight">73</i>&nbsp;    }
+<i class="no-highlight">74</i>&nbsp;
+<b class="fc"><i class="no-highlight">75</i>&nbsp;    return order; //返回最大编号</b>
+<i class="no-highlight">76</i>&nbsp;  }
+<i class="no-highlight">77</i>&nbsp;
+<i class="no-highlight">78</i>&nbsp;  /*目的：插入节点
+<i class="no-highlight">79</i>&nbsp;   * 方法：输入前驱节点编号，后继节点编号，权值加1
+<i class="no-highlight">80</i>&nbsp;   */
+<i class="no-highlight">81</i>&nbsp;  public void addEdge(int from, int to) {
+<i class="no-highlight">82</i>&nbsp;    // 权值加1
+<b class="fc"><i class="no-highlight">83</i>&nbsp;    adjacencyMatrix[from][to] += 1;</b>
+<i class="no-highlight">84</i>&nbsp;  }
+<i class="no-highlight">85</i>&nbsp;
+<i class="no-highlight">86</i>&nbsp;
+<i class="no-highlight">87</i>&nbsp;  /*目的：根据节点编号查询单词名
+<i class="no-highlight">88</i>&nbsp;   * 输入：hashmap，单词名
+<i class="no-highlight">89</i>&nbsp;   * 返回值：单词字符串，若没有节点返回null
+<i class="no-highlight">90</i>&nbsp;   */
+<i class="no-highlight">91</i>&nbsp;  public static String findKeyByValue(HashMap&lt;String, Integer&gt; map, int searchValue) {
+<b class="fc"><i class="no-highlight">92</i>&nbsp;    for (Map.Entry&lt;String, Integer&gt; entry : map.entrySet()) {</b>
+<b class="fc"><i class="no-highlight">93</i>&nbsp;      if (entry.getValue().equals(searchValue)) {</b>
+<b class="fc"><i class="no-highlight">94</i>&nbsp;        return entry.getKey(); //遍历查询，由于不会有重复的键值，故只返回查到的第一个键值</b>
+<i class="no-highlight">95</i>&nbsp;      }
+<b class="fc"><i class="no-highlight">96</i>&nbsp;    }</b>
+<b class="nc"><i class="no-highlight">97</i>&nbsp;    return null;</b>
+<i class="no-highlight">98</i>&nbsp;  }
+<i class="no-highlight">99</i>&nbsp;
+<i class="no-highlight">100</i>&nbsp;  /*目的：利用展示每个节点边的方式展示图（可以调用其他库是生成图像文件）
+<i class="no-highlight">101</i>&nbsp;   * 输入：邻接矩阵
+<i class="no-highlight">102</i>&nbsp;   * 输出：屏幕打印
+<i class="no-highlight">103</i>&nbsp;   */
+<i class="no-highlight">104</i>&nbsp;  void showDirectedGraph(int[][] g) {
+<b class="nc"><i class="no-highlight">105</i>&nbsp;    for (int i = 0; i &lt; g.length; i++) {</b>
+<b class="nc"><i class="no-highlight">106</i>&nbsp;      System.out.print(&quot; -&gt; &quot; + findKeyByValue(wordOrderMap, i) + &quot; : &quot;);</b>
+<b class="nc"><i class="no-highlight">107</i>&nbsp;      for (int j = 0; j &lt; g[i].length; j++) {</b>
+<i class="no-highlight">108</i>&nbsp;        //遍历每个节点是否有后继节点
+<b class="nc"><i class="no-highlight">109</i>&nbsp;        if (g[i][j] &gt; 0) {</b>
+<b class="nc"><i class="no-highlight">110</i>&nbsp;          System.out.print(&quot;(&quot; + g[i][j] + &quot;) -&gt; &quot; + findKeyByValue(wordOrderMap, j) + &quot; &quot;);</b>
+<i class="no-highlight">111</i>&nbsp;        }
+<i class="no-highlight">112</i>&nbsp;      }
+<b class="nc"><i class="no-highlight">113</i>&nbsp;      System.out.println();</b>
+<i class="no-highlight">114</i>&nbsp;    }
+<i class="no-highlight">115</i>&nbsp;  }
+<i class="no-highlight">116</i>&nbsp;
+<i class="no-highlight">117</i>&nbsp;  /*目的：根据输入的两个节点查询桥接节点，并且存入list nodes中
+<i class="no-highlight">118</i>&nbsp;   * 输入，A，C节点编号，nodes（存储中间节点）
+<i class="no-highlight">119</i>&nbsp;   * 返回值：bool数组，第0位表示是否有桥接节点，有为true，第1位表示是否有多个桥接节点，有为true
+<i class="no-highlight">120</i>&nbsp;   */
+<i class="no-highlight">121</i>&nbsp;  boolean[] dfs(int a, int c, List&lt;Integer&gt; nodes) {
+<b class="fc"><i class="no-highlight">122</i>&nbsp;    boolean[] flag = {false, false};</b>
+<i class="no-highlight">123</i>&nbsp;
+<b class="fc"><i class="no-highlight">124</i>&nbsp;    for (int next = 0; next &lt; adjacencyMatrix.length; next++) {</b>
+<b class="fc"><i class="no-highlight">125</i>&nbsp;      if (adjacencyMatrix[a][next] &gt; 0) {</b>
+<i class="no-highlight">126</i>&nbsp;        //依次查询A的后继节点
+<b class="fc"><i class="no-highlight">127</i>&nbsp;        if (adjacencyMatrix[next][c] &gt; 0) {</b>
+<i class="no-highlight">128</i>&nbsp;          //判断后继节点是否是C，若是则存入nodes
+<b class="fc"><i class="no-highlight">129</i>&nbsp;          nodes.add(next);</b>
+<b class="fc"><i class="no-highlight">130</i>&nbsp;          if (flag[0]) { //如果之前已经存在桥接节点则置为true</b>
+<b class="fc"><i class="no-highlight">131</i>&nbsp;            flag[1] = true;</b>
+<i class="no-highlight">132</i>&nbsp;          }
+<b class="fc"><i class="no-highlight">133</i>&nbsp;          flag[0] = true; //存在桥接节点，置为true</b>
+<i class="no-highlight">134</i>&nbsp;        }
+<i class="no-highlight">135</i>&nbsp;      }
+<i class="no-highlight">136</i>&nbsp;    }
+<b class="fc"><i class="no-highlight">137</i>&nbsp;    return flag;</b>
+<i class="no-highlight">138</i>&nbsp;  }
+<i class="no-highlight">139</i>&nbsp;
+<i class="no-highlight">140</i>&nbsp;   /*目的：根据输入两个单词查询桥接词
+<i class="no-highlight">141</i>&nbsp;   * 输入：两个单词字符串
+<i class="no-highlight">142</i>&nbsp;   * 返回值：屏幕输出的字符串，提醒桥接词信息
+<i class="no-highlight">143</i>&nbsp;   */
+<i class="no-highlight">144</i>&nbsp;  public String queryBridgeWords(String word1, String word2) {
+<b class="fc"><i class="no-highlight">145</i>&nbsp;    StringBuilder returnWords = new StringBuilder(); //返回字符串初始化</b>
+<b class="fc"><i class="no-highlight">146</i>&nbsp;    word1 = word1.replaceAll(&quot;[^a-zA-Z\\s]&quot;, &quot; &quot;).toLowerCase();</b>
+<b class="fc"><i class="no-highlight">147</i>&nbsp;    word2 = word2.replaceAll(&quot;[^a-zA-Z\\s]&quot;, &quot; &quot;).toLowerCase();</b>
+<b class="fc"><i class="no-highlight">148</i>&nbsp;    if (wordOrderMap.containsKey(word2) &amp;&amp; wordOrderMap.containsKey(word1)) {</b>
+<i class="no-highlight">149</i>&nbsp;      //判断输入是否在之前输入的文本中存在
+<b class="fc"><i class="no-highlight">150</i>&nbsp;      List&lt;Integer&gt; nodes = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">151</i>&nbsp;      int a = wordOrderMap.get(word1);</b>
+<b class="fc"><i class="no-highlight">152</i>&nbsp;      int c = wordOrderMap.get(word2);</b>
+<b class="fc"><i class="no-highlight">153</i>&nbsp;      boolean[] flag = dfs(a, c, nodes); //调用dfs方法</b>
+<b class="fc"><i class="no-highlight">154</i>&nbsp;      if (flag[1]) { //存在多个桥接词</b>
+<b class="fc"><i class="no-highlight">155</i>&nbsp;        returnWords.append(&quot;The bridge words from \&quot;&quot;).append(word1).append(&quot;\&quot; to \&quot;&quot;).append(word2).append(&quot;\&quot; are:\n&quot;);</b>
+<b class="fc"><i class="no-highlight">156</i>&nbsp;        for (int node : nodes) {</b>
+<b class="fc"><i class="no-highlight">157</i>&nbsp;          returnWords.append(findKeyByValue(wordOrderMap, node)).append(&quot; &quot;);</b>
+<b class="fc"><i class="no-highlight">158</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">159</i>&nbsp;      } else if (flag[0]) { //只有一个桥接词</b>
+<b class="fc"><i class="no-highlight">160</i>&nbsp;        returnWords.append(&quot;The bridge word from \&quot;&quot;).append(word1).append(&quot;\&quot; to \&quot;&quot;).append(word2).append(&quot;\&quot; is:\n&quot;);</b>
+<b class="fc"><i class="no-highlight">161</i>&nbsp;        returnWords.append(findKeyByValue(wordOrderMap, nodes.get(0)));</b>
+<i class="no-highlight">162</i>&nbsp;      } else { //不存在桥接词
+<b class="fc"><i class="no-highlight">163</i>&nbsp;        returnWords = new StringBuilder(&quot;No bridge words from \&quot;&quot; + word1 + &quot;\&quot; to \&quot;&quot; + word2 + &quot;\&quot;&quot;);</b>
+<i class="no-highlight">164</i>&nbsp;      }
+<b class="fc"><i class="no-highlight">165</i>&nbsp;    } else { //查询词不存在</b>
+<b class="fc"><i class="no-highlight">166</i>&nbsp;      if (!wordOrderMap.containsKey(word1)) {</b>
+<b class="fc"><i class="no-highlight">167</i>&nbsp;        returnWords.append(&quot;No \&quot;&quot;).append(word1).append(&quot;\&quot;&quot;).append(&quot; &quot;);</b>
+<i class="no-highlight">168</i>&nbsp;      }
+<b class="fc"><i class="no-highlight">169</i>&nbsp;      if (!wordOrderMap.containsKey(word2)) {</b>
+<b class="fc"><i class="no-highlight">170</i>&nbsp;        returnWords.append(&quot;No \&quot;&quot;).append(word2).append(&quot;\&quot;&quot;).append(&quot; &quot;);</b>
+<i class="no-highlight">171</i>&nbsp;      } //v1.1添加No \
+<b class="fc"><i class="no-highlight">172</i>&nbsp;      returnWords.append(&quot;in the graph!\n&quot;);</b>
+<i class="no-highlight">173</i>&nbsp;    }
+<i class="no-highlight">174</i>&nbsp;
+<i class="no-highlight">175</i>&nbsp;
+<b class="fc"><i class="no-highlight">176</i>&nbsp;    return returnWords.toString();</b>
+<i class="no-highlight">177</i>&nbsp;  }
+<i class="no-highlight">178</i>&nbsp;
+<i class="no-highlight">179</i>&nbsp;  /**
+<i class="no-highlight">180</i>&nbsp;   * @noinspection checkstyle:Indentation
+<i class="no-highlight">181</i>&nbsp;   */ /* */
+<i class="no-highlight">182</i>&nbsp;  public String generateNewText(String inputText) {
+<b class="nc"><i class="no-highlight">183</i>&nbsp;    String[] words = inputText.split(&quot;\\s+&quot;); //按空格划分</b>
+<b class="nc"><i class="no-highlight">184</i>&nbsp;    StringBuilder ans = new StringBuilder(); //返回的字符串数组</b>
+<b class="nc"><i class="no-highlight">185</i>&nbsp;    Random random = new Random();</b>
+<b class="nc"><i class="no-highlight">186</i>&nbsp;    for (int i = 0; i &lt;= words.length - 2; i++) {  //v1.1这里应该是减2,要保证j=i+1不越界</b>
+<b class="nc"><i class="no-highlight">187</i>&nbsp;      int j = i + 1;</b>
+<b class="nc"><i class="no-highlight">188</i>&nbsp;      ans.append(words[i]).append(&#39; &#39;);</b>
+<i class="no-highlight">189</i>&nbsp;      // System.out.println(words[i]);
+<i class="no-highlight">190</i>&nbsp;      // System.out.println(words[j]);
+<b class="nc"><i class="no-highlight">191</i>&nbsp;      String qe = queryBridgeWords(words[i], words[j]);</b>
+<i class="no-highlight">192</i>&nbsp;      // System.out.println(&quot;qe的值是&quot;+qe);
+<b class="nc"><i class="no-highlight">193</i>&nbsp;      String[] myquery = qe.split(&quot;\\n+&quot;); //按行划分</b>
+<b class="nc"><i class="no-highlight">194</i>&nbsp;      String[] spliteStrings = qe.split(&quot;\\s+&quot;); //按空格划分</b>
+<b class="nc"><i class="no-highlight">195</i>&nbsp;      if (!spliteStrings[0].equalsIgnoreCase(&quot;No&quot;)) { //查到了桥接词，桥接词从第二行开始</b>
+<i class="no-highlight">196</i>&nbsp;        // System.out.println(&quot;桥接词的值是&quot;+myquery[1]);
+<b class="nc"><i class="no-highlight">197</i>&nbsp;        boolean flag = false;</b>
+<b class="nc"><i class="no-highlight">198</i>&nbsp;        for (int str = 1; str &lt;= myquery.length - 1; str++) {</b>
+<b class="nc"><i class="no-highlight">199</i>&nbsp;          int rad = random.nextInt(myquery.length);</b>
+<b class="nc"><i class="no-highlight">200</i>&nbsp;          if (rad % 2 == 0) { //模拟随机选取一个桥接词添加进去</b>
+<b class="nc"><i class="no-highlight">201</i>&nbsp;            ans.append(myquery[str]).append(&quot; &quot;);</b>
+<b class="nc"><i class="no-highlight">202</i>&nbsp;            flag = true;</b>
+<b class="nc"><i class="no-highlight">203</i>&nbsp;            break;</b>
+<i class="no-highlight">204</i>&nbsp;          }
+<i class="no-highlight">205</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">206</i>&nbsp;        if (!flag) {</b>
+<i class="no-highlight">207</i>&nbsp;          //加入桥接词
+<b class="nc"><i class="no-highlight">208</i>&nbsp;          ans.append(myquery[myquery.length - 1]).append(&quot; &quot;);</b>
+<b class="nc"><i class="no-highlight">209</i>&nbsp;          flag = true;</b>
+<i class="no-highlight">210</i>&nbsp;        }
+<i class="no-highlight">211</i>&nbsp;
+<i class="no-highlight">212</i>&nbsp;      }
+<i class="no-highlight">213</i>&nbsp;    }
+<b class="nc"><i class="no-highlight">214</i>&nbsp;    return ans.append(words[words.length - 1]).toString(); //v1.1由于遍历到length-2就停止，返回时还需要将最后一个字符加上</b>
+<i class="no-highlight">215</i>&nbsp;  }
+<i class="no-highlight">216</i>&nbsp;
+<i class="no-highlight">217</i>&nbsp;  public String calcShortestPath(String word1, String word2) {
+<i class="no-highlight">218</i>&nbsp;    /*
+<i class="no-highlight">219</i>&nbsp;        * 用户输入两个单词，程序计算它们之间在图中的最短路径（路径上所有边权值之和最小），
+<i class="no-highlight">220</i>&nbsp;        * 以某种突出的方式将路径标注在原图并展示在屏幕上，同时展示路径的长度（所有边权值之和）。
+<i class="no-highlight">221</i>&nbsp;        – 例如：输入to和and，则其最短路径为to→explore→strange→new→life→and
+<i class="no-highlight">222</i>&nbsp;            ? 如果有多条最短路径，只需要展示一条即可。
+<i class="no-highlight">223</i>&nbsp;        – 可选：计算出所有的最短路径，并以不同的突出显示方式展示出来。
+<i class="no-highlight">224</i>&nbsp;        – 例如to和and之间还有另一条路径：to→seek→out→new→life→and。
+<i class="no-highlight">225</i>&nbsp;            ? 如果输入的两个单词“不可达”，则提示。
+<i class="no-highlight">226</i>&nbsp;            ? 可选功能：如果用户只输入一个单词，则程序计算出该单词到图中其他任一单词的最短路径，并逐项展示出来
+<i class="no-highlight">227</i>&nbsp;     */
+<i class="no-highlight">228</i>&nbsp;
+<b class="nc"><i class="no-highlight">229</i>&nbsp;    if (!wordOrderMap.containsKey(word1) &amp;&amp; !wordOrderMap.containsKey(word2)) {</b>
+<i class="no-highlight">230</i>&nbsp;
+<b class="nc"><i class="no-highlight">231</i>&nbsp;      return &quot;No word&quot; + &quot;\&quot;&quot; + word1 + &quot;\&quot;&quot; + &quot; and &quot; + &quot;\&quot;&quot; + word2 + &quot;\&quot;&quot;; //修改添加打印内容</b>
+<b class="nc"><i class="no-highlight">232</i>&nbsp;    } else if (!wordOrderMap.containsKey(word1) &amp;&amp; wordOrderMap.containsKey(word2)) {</b>
+<b class="nc"><i class="no-highlight">233</i>&nbsp;      return &quot;No word&quot; + &quot;\&quot;&quot; + word1 + &quot;\&quot;&quot;;</b>
+<b class="nc"><i class="no-highlight">234</i>&nbsp;    } else if (wordOrderMap.containsKey(word1) &amp;&amp; !wordOrderMap.containsKey(word2)) {</b>
+<b class="nc"><i class="no-highlight">235</i>&nbsp;      return &quot;No word&quot; + &quot;\&quot;&quot; + word2 + &quot;\&quot;&quot;;</b>
+<i class="no-highlight">236</i>&nbsp;    } else {
+<b class="nc"><i class="no-highlight">237</i>&nbsp;      ArrayList[] parent = new ArrayList[numOfVertices]; // 记录每个顶点的前驱顶点列表</b>
+<b class="nc"><i class="no-highlight">238</i>&nbsp;      for (int i = 0; i &lt; numOfVertices; i++) {</b>
+<b class="nc"><i class="no-highlight">239</i>&nbsp;        parent[i] = new ArrayList&lt;&gt;(); //对前驱列表初始化</b>
+<i class="no-highlight">240</i>&nbsp;      }
+<b class="nc"><i class="no-highlight">241</i>&nbsp;      int[] ans = new int[numOfVertices]; //追踪最短长度</b>
+<b class="nc"><i class="no-highlight">242</i>&nbsp;      Arrays.fill(ans, Integer.MAX_VALUE);</b>
+<b class="nc"><i class="no-highlight">243</i>&nbsp;      boolean[] sptSet = new boolean[numOfVertices]; //是否添加到最短路径中</b>
+<b class="nc"><i class="no-highlight">244</i>&nbsp;      Arrays.fill(sptSet, false);</b>
+<b class="nc"><i class="no-highlight">245</i>&nbsp;      int w1 = wordOrderMap.get(word1);</b>
+<i class="no-highlight">246</i>&nbsp;
+<b class="nc"><i class="no-highlight">247</i>&nbsp;      ans[w1] = 0;</b>
+<i class="no-highlight">248</i>&nbsp;      boolean add; // 每个顶点的前驱顶点列表初始化为它自己
+<b class="nc"><i class="no-highlight">249</i>&nbsp;      add = parent[w1].add(w1);</b>
+<i class="no-highlight">250</i>&nbsp;      /*接下来是dijskra算法实现 */
+<b class="nc"><i class="no-highlight">251</i>&nbsp;      for (int count = 0; count &lt; numOfVertices - 1; count++) {</b>
+<b class="nc"><i class="no-highlight">252</i>&nbsp;        int min = Integer.MAX_VALUE;</b>
+<b class="nc"><i class="no-highlight">253</i>&nbsp;        int minIndex = -1; //最小距离和最小顶点索引</b>
+<b class="nc"><i class="no-highlight">254</i>&nbsp;        for (int index = 0; index &lt; numOfVertices; index++) //遍历所有顶点</b>
+<i class="no-highlight">255</i>&nbsp;        {
+<b class="nc"><i class="no-highlight">256</i>&nbsp;          if (!sptSet[index] &amp;&amp; ans[index] &lt;= min) //迭代寻找下一个充当原点的顶点</b>
+<i class="no-highlight">257</i>&nbsp;          {
+<b class="nc"><i class="no-highlight">258</i>&nbsp;            min = ans[index];</b>
+<b class="nc"><i class="no-highlight">259</i>&nbsp;            minIndex = index;</b>
+<i class="no-highlight">260</i>&nbsp;          }
+<i class="no-highlight">261</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">262</i>&nbsp;        int u = minIndex;</b>
+<b class="nc"><i class="no-highlight">263</i>&nbsp;        sptSet[u] = true; //添加到集合中</b>
+<i class="no-highlight">264</i>&nbsp;
+<b class="nc"><i class="no-highlight">265</i>&nbsp;        for (int i = 0; i &lt; numOfVertices; i++) {</b>
+<b class="nc"><i class="no-highlight">266</i>&nbsp;          if (!sptSet[i] &amp;&amp; adjacencyMatrix[u][i] != 0 &amp;&amp; ans[u] != Integer.MAX_VALUE &amp;&amp; ans[u] + adjacencyMatrix[u][i] &lt; ans[i]) {</b>
+<b class="nc"><i class="no-highlight">267</i>&nbsp;            ans[i] = ans[u] + adjacencyMatrix[u][i];</b>
+<b class="nc"><i class="no-highlight">268</i>&nbsp;            parent[i].clear(); // 清除所有旧的前驱顶点</b>
+<b class="nc"><i class="no-highlight">269</i>&nbsp;            parent[i].add(u); // 添加新的前驱顶点</b>
+<i class="no-highlight">270</i>&nbsp;          }
+<i class="no-highlight">271</i>&nbsp;        }
+<i class="no-highlight">272</i>&nbsp;      }
+<i class="no-highlight">273</i>&nbsp;      /*算法结束，此时ans中保存原点到各顶点的最短路径*/
+<b class="nc"><i class="no-highlight">274</i>&nbsp;      int w2 = wordOrderMap.get(word2);</b>
+<b class="nc"><i class="no-highlight">275</i>&nbsp;      if (ans[w2] == Integer.MAX_VALUE) {</b>
+<b class="nc"><i class="no-highlight">276</i>&nbsp;        return &quot;there IS NO path&quot;; // 没有路径</b>
+<i class="no-highlight">277</i>&nbsp;      }
+<i class="no-highlight">278</i>&nbsp;      // 回溯找到从 word1 到 word2 的所有最短路径,v1.1修改
+<b class="nc"><i class="no-highlight">279</i>&nbsp;      List&lt;List&lt;String&gt;&gt; allPaths = new ArrayList&lt;&gt;();</b>
+<i class="no-highlight">280</i>&nbsp;
+<b class="nc"><i class="no-highlight">281</i>&nbsp;      generateAllShortestPaths(w1, w2, new ArrayList&lt;&gt;(), allPaths, parent, ans);</b>
+<i class="no-highlight">282</i>&nbsp;
+<i class="no-highlight">283</i>&nbsp;      // 构建结果字符串
+<b class="nc"><i class="no-highlight">284</i>&nbsp;      StringBuilder result = new StringBuilder();</b>
+<b class="nc"><i class="no-highlight">285</i>&nbsp;      for (List&lt;String&gt; path : allPaths) {</b>
+<b class="nc"><i class="no-highlight">286</i>&nbsp;        Collections.reverse(path); // 反转路径以获得正序</b>
+<b class="nc"><i class="no-highlight">287</i>&nbsp;        result.append(&quot;最短路径：\n&quot;).append(String.join(&quot; -&gt; &quot;, path)).append(&quot;\n&quot;);</b>
+<b class="nc"><i class="no-highlight">288</i>&nbsp;      }</b>
+<b class="nc"><i class="no-highlight">289</i>&nbsp;      result.append(&quot;最短路径长度：&quot;).append(ans[w2]);</b>
+<i class="no-highlight">290</i>&nbsp;
+<b class="nc"><i class="no-highlight">291</i>&nbsp;      return result.toString();</b>
+<i class="no-highlight">292</i>&nbsp;    }
+<i class="no-highlight">293</i>&nbsp;
+<i class="no-highlight">294</i>&nbsp;  }
+<i class="no-highlight">295</i>&nbsp;
+<i class="no-highlight">296</i>&nbsp;  /*函数名：generateAllShortestPaths
+<i class="no-highlight">297</i>&nbsp;   * 输入：图中两个顶点编号，当前路径，保存路径的字符串数组，前驱节点数组parent，保存原点到各顶点的最短路径的数组ans
+<i class="no-highlight">298</i>&nbsp;   * 输出：空
+<i class="no-highlight">299</i>&nbsp;   * 功能：给出给定两点的最短路径，保存在allPaths中
+<i class="no-highlight">300</i>&nbsp;   */
+<i class="no-highlight">301</i>&nbsp;  private void generateAllShortestPaths(int start, int end, List&lt;String&gt; currentPath, List&lt;List&lt;String&gt;&gt; allPaths, List&lt;Integer&gt;[] parent, int[] ans) {
+<i class="no-highlight">302</i>&nbsp;    // 将当前顶点添加到路径中
+<b class="nc"><i class="no-highlight">303</i>&nbsp;    currentPath.add(findKeyByValue(wordOrderMap, end));</b>
+<i class="no-highlight">304</i>&nbsp;    // 如果到达起始顶点，将当前路径添加到所有路径的列表中
+<b class="nc"><i class="no-highlight">305</i>&nbsp;    if (end == start) {</b>
+<b class="nc"><i class="no-highlight">306</i>&nbsp;      allPaths.add(new ArrayList&lt;&gt;(currentPath));</b>
+<i class="no-highlight">307</i>&nbsp;    } else {
+<i class="no-highlight">308</i>&nbsp;      // 遍历所有前驱顶点
+<b class="nc"><i class="no-highlight">309</i>&nbsp;      for (int pred : parent[end]) {</b>
+<b class="nc"><i class="no-highlight">310</i>&nbsp;        if (ans[end] == ans[pred] + adjacencyMatrix[pred][end]) {</b>
+<b class="nc"><i class="no-highlight">311</i>&nbsp;          generateAllShortestPaths(start, pred, new ArrayList&lt;&gt;(currentPath), allPaths, parent, ans);</b>
+<i class="no-highlight">312</i>&nbsp;
+<i class="no-highlight">313</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">314</i>&nbsp;      }</b>
+<i class="no-highlight">315</i>&nbsp;    }
+<i class="no-highlight">316</i>&nbsp;  }
+<i class="no-highlight">317</i>&nbsp;
+<i class="no-highlight">318</i>&nbsp;  /**
+<i class="no-highlight">319</i>&nbsp;   * @noinspection checkstyle:LeftCurly, checkstyle:Indentation
+<i class="no-highlight">320</i>&nbsp;   */ /* */
+<i class="no-highlight">321</i>&nbsp;  public String randomWalk()
+<i class="no-highlight">322</i>&nbsp;    /*
+<i class="no-highlight">323</i>&nbsp;     * ? 进入该功能时，程序随机的从图中选择一个点，以此为起点沿出边进行随机遍历，记录经过的所有节点和边，
+<i class="no-highlight">324</i>&nbsp;     *   直到出现第一条重复的边为止，或者进入的某个节点不存在出边为止。
+<i class="no-highlight">325</i>&nbsp;     *   在遍历过程中，用户也可随时停止遍历。
+<i class="no-highlight">326</i>&nbsp;     * ? 将遍历的节点输出为文本，并以文件形式写磁盘。
+<i class="no-highlight">327</i>&nbsp;     * ? 例如：– to seek out new life and new worlds to explore strange new civilizations
+<i class="no-highlight">328</i>&nbsp;     * – to explore strange new worlds to explore
+<i class="no-highlight">329</i>&nbsp;     */
+<i class="no-highlight">330</i>&nbsp;    {
+<b class="nc"><i class="no-highlight">331</i>&nbsp;    List&lt;Integer&gt; visited = new ArrayList&lt;&gt;(); // 已访问的顶点</b>
+<b class="nc"><i class="no-highlight">332</i>&nbsp;    int startVertex = new Random().nextInt(numOfVertices); // 从随机顶点开始遍历</b>
+<b class="nc"><i class="no-highlight">333</i>&nbsp;    visited.add(startVertex);</b>
+<b class="nc"><i class="no-highlight">334</i>&nbsp;    System.out.println(findKeyByValue(wordOrderMap, startVertex) + &quot; &quot;);</b>
+<i class="no-highlight">335</i>&nbsp;    // int[][]edge = adjacencyMatrix;//记录已经访问过的边
+<b class="nc"><i class="no-highlight">336</i>&nbsp;    int[][] edge = new int[numOfVertices][numOfVertices];</b>
+<b class="nc"><i class="no-highlight">337</i>&nbsp;    for (int i = 0; i &lt; numOfVertices; i++) {</b>
+<b class="nc"><i class="no-highlight">338</i>&nbsp;      Arrays.fill(edge[i], 0);</b>
+<i class="no-highlight">339</i>&nbsp;    } //这时edge全被置为0
+<b class="nc"><i class="no-highlight">340</i>&nbsp;    Scanner scanner = new Scanner(System.in);</b>
+<b class="nc"><i class="no-highlight">341</i>&nbsp;    boolean traversalRunning = true; // 遍历是否正在进行的标志</b>
+<b class="nc"><i class="no-highlight">342</i>&nbsp;    while (traversalRunning) {</b>
+<i class="no-highlight">343</i>&nbsp;      // System.out.println(&quot;现在进入循环&quot;);
+<i class="no-highlight">344</i>&nbsp;      // 随机选择下一个顶点
+<b class="nc"><i class="no-highlight">345</i>&nbsp;      Random random = new Random();</b>
+<b class="nc"><i class="no-highlight">346</i>&nbsp;      int nextVertex = -1;</b>
+<i class="no-highlight">347</i>&nbsp;      do {
+<b class="nc"><i class="no-highlight">348</i>&nbsp;        List&lt;Integer&gt; exist = new ArrayList&lt;&gt;(); // 已访问的顶点</b>
+<b class="nc"><i class="no-highlight">349</i>&nbsp;        for (int i = 0; i &lt; numOfVertices; i++) {</b>
+<b class="nc"><i class="no-highlight">350</i>&nbsp;          if (adjacencyMatrix[startVertex][i] != 0) {</b>
+<b class="nc"><i class="no-highlight">351</i>&nbsp;            exist.add(i);</b>
+<i class="no-highlight">352</i>&nbsp;          }
+<i class="no-highlight">353</i>&nbsp;        }
+<i class="no-highlight">354</i>&nbsp;        // System.out.println(&quot;exist.size是&quot; + exist.size());
+<b class="nc"><i class="no-highlight">355</i>&nbsp;        if (exist.size() == 0) {</b>
+<b class="nc"><i class="no-highlight">356</i>&nbsp;          traversalRunning = false;</b>
+<b class="nc"><i class="no-highlight">357</i>&nbsp;          break;</b>
+<i class="no-highlight">358</i>&nbsp;        }
+<i class="no-highlight">359</i>&nbsp;
+<b class="nc"><i class="no-highlight">360</i>&nbsp;        nextVertex = exist.get(random.nextInt(numOfVertices) % exist.size());</b>
+<i class="no-highlight">361</i>&nbsp;
+<b class="nc"><i class="no-highlight">362</i>&nbsp;        visited.add(nextVertex); //将顶点加入到遍历集中</b>
+<b class="nc"><i class="no-highlight">363</i>&nbsp;        System.out.println(findKeyByValue(wordOrderMap, nextVertex) + &quot; &quot;);</b>
+<i class="no-highlight">364</i>&nbsp;
+<i class="no-highlight">365</i>&nbsp;
+<b class="nc"><i class="no-highlight">366</i>&nbsp;        if (edge[startVertex][nextVertex] == 1) {</b>
+<b class="nc"><i class="no-highlight">367</i>&nbsp;          traversalRunning = false;</b>
+<b class="nc"><i class="no-highlight">368</i>&nbsp;          break;</b>
+<i class="no-highlight">369</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">370</i>&nbsp;        edge[startVertex][nextVertex] = 1;</b>
+<b class="nc"><i class="no-highlight">371</i>&nbsp;        startVertex = nextVertex;</b>
+<b class="nc"><i class="no-highlight">372</i>&nbsp;        System.out.println(&quot;Input \&quot;c\&quot; to continue or any other words &quot; + &quot;like \&quot;q\&quot; to quit the random walk&quot;);</b>
+<i class="no-highlight">373</i>&nbsp;
+<b class="nc"><i class="no-highlight">374</i>&nbsp;        String text = scanner.nextLine();</b>
+<b class="nc"><i class="no-highlight">375</i>&nbsp;        if (!text.equals(&quot;c&quot;)) {</b>
+<b class="nc"><i class="no-highlight">376</i>&nbsp;          traversalRunning = false;</b>
+<b class="nc"><i class="no-highlight">377</i>&nbsp;          break;</b>
+<i class="no-highlight">378</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">379</i>&nbsp;      } while ((true));</b>
+<i class="no-highlight">380</i>&nbsp;
+<i class="no-highlight">381</i>&nbsp;
+<b class="nc"><i class="no-highlight">382</i>&nbsp;    }</b>
+<i class="no-highlight">383</i>&nbsp;    // scanner.close();
+<b class="nc"><i class="no-highlight">384</i>&nbsp;    StringBuilder ans = new StringBuilder();</b>
+<b class="nc"><i class="no-highlight">385</i>&nbsp;    for (int i : visited) {</b>
+<b class="nc"><i class="no-highlight">386</i>&nbsp;      ans.append(findKeyByValue(wordOrderMap, i)).append(&quot; &quot;);</b>
+<b class="nc"><i class="no-highlight">387</i>&nbsp;    }</b>
+<b class="nc"><i class="no-highlight">388</i>&nbsp;    return ans.toString();</b>
+<i class="no-highlight">389</i>&nbsp;
+<i class="no-highlight">390</i>&nbsp;  }
+<i class="no-highlight">391</i>&nbsp;
+<i class="no-highlight">392</i>&nbsp;  /* */
+<i class="no-highlight">393</i>&nbsp;  public static void main(String[] args) throws Exception {
+<i class="no-highlight">394</i>&nbsp;
+<b class="nc"><i class="no-highlight">395</i>&nbsp;    java.util.Scanner scanner = new java.util.Scanner(System.in);</b>
+<b class="nc"><i class="no-highlight">396</i>&nbsp;    System.out.println(&quot;请输入文件路径：&quot;);</b>
+<b class="nc"><i class="no-highlight">397</i>&nbsp;    String filePath = scanner.nextLine();</b>
+<i class="no-highlight">398</i>&nbsp;
+<b class="nc"><i class="no-highlight">399</i>&nbsp;    StringBuilder contentBuilder = new StringBuilder();</b>
+<b class="nc"><i class="no-highlight">400</i>&nbsp;    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {</b>
+<i class="no-highlight">401</i>&nbsp;      String currentLine;
+<b class="nc"><i class="no-highlight">402</i>&nbsp;      while ((currentLine = br.readLine()) != null) {</b>
+<b class="nc"><i class="no-highlight">403</i>&nbsp;        contentBuilder.append(currentLine).append(System.lineSeparator());</b>
+<i class="no-highlight">404</i>&nbsp;      }
+<b class="nc"><i class="no-highlight">405</i>&nbsp;    } catch (IOException e) {</b>
+<b class="nc"><i class="no-highlight">406</i>&nbsp;      System.err.println(&quot;文件读取失败或文件不存在。&quot;);</b>
+<b class="nc"><i class="no-highlight">407</i>&nbsp;      e.printStackTrace();</b>
+<b class="nc"><i class="no-highlight">408</i>&nbsp;      scanner.close();</b>
+<i class="no-highlight">409</i>&nbsp;      return;
+<b class="nc"><i class="no-highlight">410</i>&nbsp;    }</b>
+<b class="nc"><i class="no-highlight">411</i>&nbsp;    System.out.println(&quot;文件内容：&quot;);</b>
+<b class="nc"><i class="no-highlight">412</i>&nbsp;    System.out.println(contentBuilder.toString());</b>
+<b class="nc"><i class="no-highlight">413</i>&nbsp;    String txt = contentBuilder.toString();</b>
+<b class="nc"><i class="no-highlight">414</i>&nbsp;    App graph = new App(txt); //实例化App（图）</b>
+<i class="no-highlight">415</i>&nbsp;    // Scanner scanner = new Scanner(System.in);
+<i class="no-highlight">416</i>&nbsp;    while (true) {
+<b class="nc"><i class="no-highlight">417</i>&nbsp;      System.out.println(&quot;*********************************************&quot;);</b>
+<b class="nc"><i class="no-highlight">418</i>&nbsp;      System.out.println(&quot;show: show the graph&quot;);</b>
+<b class="nc"><i class="no-highlight">419</i>&nbsp;      System.out.println(&quot;bridge: search bridge words&quot;);</b>
+<b class="nc"><i class="no-highlight">420</i>&nbsp;      System.out.println(&quot;generate: generate new text by bridge words&quot;);</b>
+<b class="nc"><i class="no-highlight">421</i>&nbsp;      System.out.println(&quot;shortpath: search the shortest path between two words&quot;);</b>
+<b class="nc"><i class="no-highlight">422</i>&nbsp;      System.out.println(&quot;walk: walk in the graph randomly&quot;);</b>
+<b class="nc"><i class="no-highlight">423</i>&nbsp;      System.out.println(&quot;exit: exit the program&quot;);</b>
+<b class="nc"><i class="no-highlight">424</i>&nbsp;      System.out.println(&quot;*********************************************&quot;);</b>
+<b class="nc"><i class="no-highlight">425</i>&nbsp;      System.out.println(&quot;please input the command.&quot;);</b>
+<b class="nc"><i class="no-highlight">426</i>&nbsp;      String command = scanner.nextLine();</b>
+<b class="nc"><i class="no-highlight">427</i>&nbsp;      if (command.equalsIgnoreCase(&quot;exit&quot;)) {</b>
+<b class="nc"><i class="no-highlight">428</i>&nbsp;        break;</b>
+<b class="nc"><i class="no-highlight">429</i>&nbsp;      } else if (command.equalsIgnoreCase(&quot;show&quot;)) {</b>
+<i class="no-highlight">430</i>&nbsp;
+<i class="no-highlight">431</i>&nbsp;        //展示有向图
+<b class="nc"><i class="no-highlight">432</i>&nbsp;        graph.showDirectedGraph(graph.adjacencyMatrix); //展示图</b>
+<b class="nc"><i class="no-highlight">433</i>&nbsp;      } else if (command.equalsIgnoreCase(&quot;bridge&quot;)) {</b>
+<i class="no-highlight">434</i>&nbsp;        //查询桥接词
+<i class="no-highlight">435</i>&nbsp;        final String word1;
+<i class="no-highlight">436</i>&nbsp;        final String word2;
+<b class="nc"><i class="no-highlight">437</i>&nbsp;        System.out.println(&quot;please input word1&quot;);</b>
+<b class="nc"><i class="no-highlight">438</i>&nbsp;        word1 = scanner.nextLine().replaceAll(&quot;[^a-zA-Z\\s]&quot;, &quot; &quot;).toLowerCase();</b>
+<i class="no-highlight">439</i>&nbsp;//        word1 = word1.replaceAll(&quot;[^a-zA-Z\\s]&quot;, &quot; &quot;).toLowerCase();
+<b class="nc"><i class="no-highlight">440</i>&nbsp;        System.out.println(&quot;please input word2&quot;);</b>
+<b class="nc"><i class="no-highlight">441</i>&nbsp;        word2 = scanner.nextLine().replaceAll(&quot;[^a-zA-Z\\s]&quot;, &quot; &quot;).toLowerCase();</b>
+<i class="no-highlight">442</i>&nbsp;//        word2 = word2.replaceAll(&quot;[^a-zA-Z\\s]&quot;, &quot; &quot;).toLowerCase();
+<b class="nc"><i class="no-highlight">443</i>&nbsp;        System.out.println(graph.queryBridgeWords(word1, word2)); //查询桥接词</b>
+<b class="nc"><i class="no-highlight">444</i>&nbsp;      } else if (command.equalsIgnoreCase(&quot;generate&quot;)) {</b>
+<i class="no-highlight">445</i>&nbsp;        //根据bridge word生成新文本
+<i class="no-highlight">446</i>&nbsp;        /*
+<i class="no-highlight">447</i>&nbsp;         * – 如果两个单词无bridge word，则保持不变，不插入任何单词；
+<i class="no-highlight">448</i>&nbsp;         * – 如果两个单词之间存在多个bridge words，则随机从中选择一个插入进去形成新文本。
+<i class="no-highlight">449</i>&nbsp;         * ? 例如用户输入：Seek to explore new and exciting synergies
+<i class="no-highlight">450</i>&nbsp;         * ? 则输出结果为：Seek to explore strange new life and exciting synergies
+<i class="no-highlight">451</i>&nbsp;         */
+<b class="nc"><i class="no-highlight">452</i>&nbsp;        System.out.println(&quot;please input the text.&quot;);</b>
+<b class="nc"><i class="no-highlight">453</i>&nbsp;        String newText = scanner.nextLine();</b>
+<b class="nc"><i class="no-highlight">454</i>&nbsp;        String ans = graph.generateNewText(newText);</b>
+<b class="nc"><i class="no-highlight">455</i>&nbsp;        System.out.println(ans);</b>
+<b class="nc"><i class="no-highlight">456</i>&nbsp;      } else if (command.equalsIgnoreCase(&quot;shortpath&quot;)) {</b>
+<i class="no-highlight">457</i>&nbsp;        //计算两个单词之间的最短路径
+<i class="no-highlight">458</i>&nbsp;        //dijskla算法
+<b class="nc"><i class="no-highlight">459</i>&nbsp;        System.out.println(&quot;please input two words with black:&quot;);</b>
+<b class="nc"><i class="no-highlight">460</i>&nbsp;        String newText = scanner.nextLine().replaceAll(&quot;[^a-zA-Z\\s]&quot;, &quot; &quot;).toLowerCase();</b>
+<b class="nc"><i class="no-highlight">461</i>&nbsp;        String[] words = newText.split(&quot;\\s+&quot;); //按空格划分</b>
+<b class="nc"><i class="no-highlight">462</i>&nbsp;        if (words.length != 2) {</b>
+<b class="nc"><i class="no-highlight">463</i>&nbsp;          System.out.println(&quot;Input wrong!Please input two words!&quot;);</b>
+<i class="no-highlight">464</i>&nbsp;        } else {
+<b class="nc"><i class="no-highlight">465</i>&nbsp;          String ans = graph.calcShortestPath(words[0], words[1]);</b>
+<b class="nc"><i class="no-highlight">466</i>&nbsp;          System.out.println(ans);</b>
+<i class="no-highlight">467</i>&nbsp;        }
+<i class="no-highlight">468</i>&nbsp;
+<b class="nc"><i class="no-highlight">469</i>&nbsp;      } else if (command.equalsIgnoreCase(&quot;walk&quot;)) {</b>
+<i class="no-highlight">470</i>&nbsp;        //随机游走
+<b class="nc"><i class="no-highlight">471</i>&nbsp;        String ans = graph.randomWalk();</b>
+<b class="nc"><i class="no-highlight">472</i>&nbsp;        System.out.println(ans);</b>
+<i class="no-highlight">473</i>&nbsp;        // String filePath = &quot;file.txt&quot;; //文件路径
+<b class="nc"><i class="no-highlight">474</i>&nbsp;        try (</b>
+<b class="nc"><i class="no-highlight">475</i>&nbsp;                FileWriter writer = new FileWriter(&quot;file.txt&quot;)</b>
+<i class="no-highlight">476</i>&nbsp;        ) {
+<b class="nc"><i class="no-highlight">477</i>&nbsp;          writer.write(ans);</b>
+<b class="nc"><i class="no-highlight">478</i>&nbsp;          System.out.println(&quot;内容已成功写入文件file.txt。&quot;);</b>
+<b class="nc"><i class="no-highlight">479</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i class="no-highlight">480</i>&nbsp;          e.printStackTrace();</b>
+<b class="nc"><i class="no-highlight">481</i>&nbsp;          System.out.println(&quot;写入文件时出错：&quot; + e.getMessage());</b>
+<b class="nc"><i class="no-highlight">482</i>&nbsp;        }</b>
+<b class="nc"><i class="no-highlight">483</i>&nbsp;      } else {</b>
+<b class="nc"><i class="no-highlight">484</i>&nbsp;        System.out.println(&quot;Invalid command.Please input again!&quot;);</b>
+<i class="no-highlight">485</i>&nbsp;      }
+<b class="nc"><i class="no-highlight">486</i>&nbsp;    }</b>
+<b class="nc"><i class="no-highlight">487</i>&nbsp;    scanner.close();</b>
+<i class="no-highlight">488</i>&nbsp;  }
+<i class="no-highlight">489</i>&nbsp;}
+<i class="no-highlight">490</i>&nbsp;
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-06-10 20:10</div>
+</div>
+</body>
+</html>
