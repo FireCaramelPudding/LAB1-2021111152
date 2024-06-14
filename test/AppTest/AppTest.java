@@ -5,6 +5,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 
+
 public class AppTest {
 
   private App graph;
@@ -13,14 +14,15 @@ public class AppTest {
   @BeforeMethod
   public void setUp() {
     // 初始化图对象
-    graph = new App(" Alice was beginning to get very tired of sitting by her sister\n" +
-            "on the bank, and of having nothing to do:  once or twice she had\n" +
-            "peeped into the book her sister was reading, but it had no\n" +
-            "pictures or conversations in it, `and what is the use of a book,'\n" +
-            "thought Alice `without pictures or conversation?get so tired'");
+    graph = new App("""
+             Alice was beginning to get very tired of sitting by her sister
+            on the bank, and of having nothing to do:  once or twice she had
+            peeped into the book her sister was reading, but it had no
+            pictures or conversations in it, `and what is the use of a book,'
+            thought Alice `without pictures or conversation?get so tired'""");
   }
 
-  // 第一个测试用例:存在一座桥接词
+  // 第一个测试用例:存在一个桥接词
   @Test
   public void testqueryBridgeWordsCase1() {
     // 准备测试数据
@@ -35,10 +37,10 @@ public class AppTest {
     assertEquals(result[1], expected, "Case 1: The queryBridgeWords method did not return the expected bridge word.");
   }
 
-  // 第二个测试用例：存在多座桥接词
+  // 第二个测试用例：存在多个桥接词
   @Test
   public void testqueryBridgeWordsCase2() {
-    // 准备第二个测试用例的数据
+    // 准备测试用例的数据
     String word1 = "get";
     String word2 = "tired";
     // 调用queryBridgeWords方法
@@ -56,7 +58,7 @@ public class AppTest {
   // 第三个测试用例：第一个词不在图中
   @Test
   public void testqueryBridgeWordsCase3() {
-    // 准备第二个测试用例的数据
+    // 准备测试用例的数据
     String word1 = "Bob";
     String word2 = "Alice";
     // 调用queryBridgeWords方法
@@ -70,7 +72,7 @@ public class AppTest {
   // 第四个测试用例：第二个词不在图中
   @Test
   public void testqueryBridgeWordsCase4() {
-    // 准备第二个测试用例的数据
+    // 准备测试用例的数据
     String word1 = "Alice";
     String word2 = "teacher";
     // 调用queryBridgeWords方法
@@ -84,7 +86,7 @@ public class AppTest {
   // 第五个测试用例：两个词均不在图中
   @Test
   public void testqueryBridgeWordsCase5() {
-    // 准备第二个测试用例的数据
+    // 准备测试用例的数据
     String word1 = "hello";
     String word2 = "world";
     // 调用queryBridgeWords方法
@@ -98,7 +100,7 @@ public class AppTest {
   // 第六个测试用例：不存在桥接词
   @Test
   public void testqueryBridgeWordsCase6() {
-    // 准备第二个测试用例的数据
+    // 准备测试用例的数据
     String word1 = "it";
     String word2 = "Alice";
     // 调用queryBridgeWords方法
