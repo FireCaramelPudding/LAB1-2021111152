@@ -137,10 +137,10 @@ public class App {
     return flag;
   }
 
-   /*目的：根据输入两个单词查询桥接词
-   * 输入：两个单词字符串
-   * 返回值：屏幕输出的字符串，提醒桥接词信息
-   */
+  /*目的：根据输入两个单词查询桥接词
+  * 输入：两个单词字符串
+  * 返回值：屏幕输出的字符串，提醒桥接词信息
+  */
   public String queryBridgeWords(String word1, String word2) {
     StringBuilder returnWords = new StringBuilder(); //返回字符串初始化
     word1 = word1.replaceAll("[^a-zA-Z\\s]", " ").toLowerCase();
@@ -251,14 +251,14 @@ public class App {
       for (int count = 0; count < numOfVertices - 1; count++) {
         int min = Integer.MAX_VALUE;
         int minIndex = -1; //最小距离和最小顶点索引
-        for (int index = 0; index < numOfVertices; index++) //遍历所有顶点
-        {
-          if (!sptSet[index] && ans[index] <= min) //迭代寻找下一个充当原点的顶点
-          {
-            min = ans[index];
-            minIndex = index;
+        for (int index = 0; index < numOfVertices; index++){ //遍历所有顶点
+
+          if (!sptSet[index] && ans[index] <= min){ //迭代寻找下一个充当原点的顶点
+
+              min = ans[index];
+              minIndex = index;
+            }
           }
-        }
         int u = minIndex;
         sptSet[u] = true; //添加到集合中
 
@@ -284,9 +284,9 @@ public class App {
       StringBuilder result = new StringBuilder();
       for (List<String> path : allPaths) {
         Collections.reverse(path); // 反转路径以获得正序
-        result.append("最短路径：\n").append(String.join(" -> ", path)).append("\n");
+        result.append("shortest path:\n").append(String.join(" -> ", path)).append("\n");
       }
-      result.append("最短路径长度：").append(ans[w2]);
+      result.append("the length of shortest:").append(ans[w2]);
 
       return result.toString();
     }
@@ -318,7 +318,7 @@ public class App {
   /**
    * @noinspection checkstyle:LeftCurly, checkstyle:Indentation
    */ /* */
-  public String randomWalk()
+  public String randomWalk(){
     /*
      * ? 进入该功能时，程序随机的从图中选择一个点，以此为起点沿出边进行随机遍历，记录经过的所有节点和边，
      *   直到出现第一条重复的边为止，或者进入的某个节点不存在出边为止。
@@ -327,7 +327,6 @@ public class App {
      * ? 例如：– to seek out new life and new worlds to explore strange new civilizations
      * – to explore strange new worlds to explore
      */
-    {
     List<Integer> visited = new ArrayList<>(); // 已访问的顶点
     int startVertex = new Random().nextInt(numOfVertices); // 从随机顶点开始遍历
     visited.add(startVertex);
@@ -387,7 +386,8 @@ public class App {
     }
     return ans.toString();
 
-  }
+
+    }
 
   /* */
   public static void main(String[] args) throws Exception {
@@ -436,10 +436,8 @@ public class App {
         final String word2;
         System.out.println("please input word1");
         word1 = scanner.nextLine().replaceAll("[^a-zA-Z\\s]", " ").toLowerCase();
-//        word1 = word1.replaceAll("[^a-zA-Z\\s]", " ").toLowerCase();
         System.out.println("please input word2");
         word2 = scanner.nextLine().replaceAll("[^a-zA-Z\\s]", " ").toLowerCase();
-//        word2 = word2.replaceAll("[^a-zA-Z\\s]", " ").toLowerCase();
         System.out.println(graph.queryBridgeWords(word1, word2)); //查询桥接词
       } else if (command.equalsIgnoreCase("generate")) {
         //根据bridge word生成新文本
